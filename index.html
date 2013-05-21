@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="../../jDomo/jquery-1.9.1.js"></script>
+    <script src="jquery.touchwipe.min.js"></script>
+    <script src="../../domo/lib/domo.js"></script>
+    <script src="../jsCarton/lib/help.js"></script>
+    <script src="../jsCarton/lib/cartonFactory.js"></script>
+    <script src="../jsCarton/lib/carton.js"></script>
+    <script src="atom.js"></script>
+    <script src="../../jDomo/jDomo.js"></script>
+    <script src="jq.js"></script>
+    <script src="explode.js"></script>
+    <script src="editor.js"></script>
+
+</head>
+<body>
+<script>
+
+///////////////////
+
+  var column = 44;
+  var gutter = 18;
+  var row = 18;
+
+///////////////////
+
+  carton( { selector: '.' },  [ { minWidth: 640 }, { maxWidth: 640 } ] );
+
+///////////////////
+  
+  var css = {
+    
+    body: {
+      width: '100%',
+      '-webkit-text-size-adjust': 'none', // <-- fonts will be displayed as defined
+      '-moz-user-select': 'none',
+      '-webkit-user-select': 'none'
+    }
+    
+  }
+  
+  with ( css )
+  
+  HTML(
+    HEAD(
+      TITLE( 'carton markup' )
+      ,
+      META( { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0' } )
+      ,
+      META( { httpEquiv: 'Content-Type', content: 'text/html;charset=utf-8' } )
+      ,
+      LINK( { href: '../cssCarton/reset.min.css',  rel: 'stylesheet',  type: 'text/css' } )
+      ,
+      LINK( { type: 'text/css', rel: 'stylesheet', href: 'http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600' } )
+      ,
+      LINK( { type: 'text/css', rel: 'stylesheet', href: 'http://fonts.googleapis.com/css?family=Source+Code+Pro:400,900' } )
+      ,
+      STYLE()
+    )
+    ,
+    BODY( [ body, 'center']
+      ,
+      TITLEIMG()
+      ,
+      INTRO()
+      ,
+      PRO_CON()
+      ,
+      EDITOR()
+      ,
+      FAQ()
+      ,
+      GITHUB()
+      ,
+      FOOT()
+    )
+  )
+
+///////////////////
+
+  function TITLEIMG () {
+    
+    var css = {
+      head: {
+        backgroundImage: 'linear-gradient(top, #666666 0%, #2C2C2C 99%)', backgroundColor: '#717171', 
+        borderTop: '10px solid #4C4C4C', paddingLeft: '25%', paddingRight: '25%', paddingTop: '5%',
+        paddingBottom: '2.5%'
+      },
+
+      titleImg: {
+        dipslay: 'block', width: '100%', height: 'auto', maxWidth: 480, maxHeight: 480 
+      },
+    
+      titleLogo: {
+        backgroundImage: 'url(img/bg_logo.png)', backgroundPosition: '0 0', backgroundRepeat: 'no-repeat',
+        backgroundSize: '100% 100%', width: '50%', height: '15%', marginRight: '-10%', marginTop: '-5%', 
+        maxWidth: 240, maxHeight: 76, textIndent: -2000
+      },
+    
+      titleGithub: {
+         backgroundImage: 'url(img/bg_fork.png)', backgroundPosition: '0 0', backgroundRepeat: 'no-repeat'
+       , backgroundSize: '100% 100%', width: 140, height: 140
+      }
+    }
+    
+    with ( css )
+    
+    return (
+      FRAGMENT(
+        STRETCH( [ head ],
+          CELL( [ '100%', 'auto' ] 
+            ,
+            IMG( [ titleImg ], { src:'img/bg_icon@2x.png' } )
+            ,
+            STICKER( [ 0, '100%', 'auto', 'auto', titleLogo ], 'cssCarton' )
+          )
+        )
+        ,
+        STICKER( [ 0, 0, 'auto', 'auto', titleGithub ] )
+      )
+    )
+  }
+  
+///////////////////
+
+  function INTRO () {
+  
+    var txt = {
+      headline: 'HI. WE LOVE CSS',
+      subline: 'We are glad that you finally made it to cssCarton.',
+      columns: [
+        'Before we started building carton we had years of experience in developing static handcrafted webpages - and also more complex web-based interfaces in HTML and CSS. In the past, we usually built each stylesheet from scratch by writing every style by hand, pasting reusable code from one project to another,  while constantly checking if it was looking good in the most common browsers. Instead of dealing with plenty of different devices or varying screen sizes, we only had to choose which was the lowest pc screen resolution we wanted to support with our interface. The big deal of that time was to fix the visible on screen differences produced by the handful of browsers engines. A job that could be done by a single fronted developer ( Who was often also the front-end designer ). Today we demand so much more from our designs. With JavaScript and HTML5 we are able to build interfaces that are closer to the user experience of iOS or Desktop applications and in some cases even more comfortable to use and more engaging. In addition we want to reach as many people as possible, anytime and anywhere, so our interfaces have to be responsive to support all kind of devices, screen sizes and resolutions. Don\'t get us wrong we like all the new opportunities.',
+        'But it\'s also a lot of work, which means more people need to be involved into the process of building an interface and - as a consequence - a stylesheet. That caused some trouble in our projects. Everybody had to write and add custom code to the stylesheet to create his part of the interface, sooner or later it got messed up. It was hard keep track, prevent undesired inheritance or redundancy, identify which rule determined the look of a given DOM-element or how a styling rule affected an elements position. We needed to fix that. We think the time has come for a framework or at least a pattern to help us and others deal with this. We looked at different CSS-frameworks before, but although some are very sophisticated and powerful we didn\'t like to use them, so we created cssCarton. We always thought HTML should be formatted in it\'s natural way without to much intervention, stacked classes, nested div layers and such. The core idea of cssCarton is that content should be able flow like words in a paragraph of text, instead of pushing it into columns and gutters. From time to time though we wanted to retain the ability to lock content together and prevent or facilitate a line break, so to speak.',
+        'Also we realized that there might be some content that could be stretched or compressed, while other content needed a fixed width or height. While we where building carton, we focused on separating positioning and scaling from otherwise styling an element. That means carton only deals with the position and size of DOM elements but is open to integrate with your way of otherwise using css (naming stuff, applying rules, changing the look of stuff, etc.). The result are a few special classes and a pattern, which can be combined and used to build any kind of design in HTML and CSS. Carton makes it easy to understand how  DOM-elements are arranged by just reading their class names. Carton can be used to build a rigid grid, flowing page or anything in between. There are no limits. Interested in learning more? Starting with carton is easy ( for an experienced css developer ), you can learn by reading it\'s source code and writing some code with the help of the short documentation we provide. We hope you will enjoy using it.'
+      ],
+      signature: 'M + T'
+    }
+  
+    var css = {
+  
+      intro: {
+        backgroundColor: '#F9E722', 
+        overflow: 'hidden', boxShadow: '0px 2px 15px rgba(0,0,0,0.29)', zIndex: '1',
+        paddingTop: 2 * row, paddingBottom: 2 * row, paddingLeft: gutter,
+        height: 'auto'
+      },
+      
+      intro_mobile: { paddingTop: row, paddingBottom: 2 * row, paddingRight: 0, paddingLeft: 0 },
+  
+      headline: {
+        fontFamily: 'Source Sans Pro', fontWeight: '600', fontSize: 48, color: '#FFFFFF', lineHeight: 3 * row, 
+        paddingRight: gutter, paddingLeft: gutter
+      },
+      
+      headline_mobile: { fontSize: 2 * row },
+  
+      subline: {  
+        fontFamily: 'Source Sans Pro', fontWeight: '300',	fontSize: 20, color: '#5B5821', lineHeight: 2 * row, 
+        paddingRight: gutter, paddingLeft: gutter, 
+        paddingBottom: row + ( row / 2 )
+      },
+      
+      subline_mobile: { fontSize: row, lineHeight: row + row / 2, paddingBottom: row },
+      
+      column: {
+        fontFamily: 'Source Sans Pro', fontWeight: '300', fontSize: 14, color: '#5B5821', lineHeight: row, 
+        paddingRight: gutter,
+        '_strong': { fontWeight: '800' }
+      },
+      
+      column_mobile: { fontSize: 12, paddingRight: gutter, paddingLeft: gutter },
+  
+      nav: {
+        '_a.item': {
+          width: 16, height: 16,
+          backgroundColor: '#CEC620',
+          backgroundImage: 'url(img/bg_intro_nav_item.png)', backgroundPosition: '0 0', backgroundRepeat: 'no-repeat',
+          border: '2px solid #F9E722',
+          textIndent: -100, overflow: 'hidden', backgroundSize: '16px 16px',
+          transition: 'background-color 0.1s',
+          cursor: 'pointer',
+        },
+        '_a.item_move': { backgroundColor: '#908B10' },
+        '_a.item_active': { backgroundColor: '#484848' }
+      }
+  
+    }
+  
+    function jquerySwipe ( $node ) {
+      var $navItems = $node.find( 'a.item' );
+      var $current = $navItems.eq( 0 );
+      var $stage = $node.find('> *:eq(1)');
+  
+      $stage.touchwipe({
+        min_move_x: 30,
+        preventDefaultEvents: false,
+        wipeLeft: function () { 
+          if($stage.is(':animated')) return
+          var moveTo = $current.next()
+          if( ! moveTo.length ) moveTo = $navItems.filter( ':first' );
+          moveTo.trigger( 'click' );
+        },
+        wipeRight: function () { 
+          if($stage.is(':animated')) return
+          var moveTo =  $current.prev()
+          //if( ! moveTo.length ) moveTo = $navItems.filter( ':last' );
+          moveTo.trigger( 'click' ); 
+        }
+      })
+    
+      $( window ).on('orientationchange resize', function() { if( $current.prev().length) $current.trigger( 'click' ) });
+    
+      $navItems.on( 'click', function () {   
+        var changed = ( $current[0] !== this  )
+        if( changed) $current.removeClass( 'item_active' );
+        $current = $( this );
+    
+        var pos = $current.prevAll().length
+        var pw = $stage.width()
+        var i = 0
+        var n;
+    
+        $stage
+          .stop()
+          .animate( 
+            { scrollLeft: pw * pos },
+            { duration: 400, 
+              complete: function () { 
+                $current.addClass( 'item_active' ) 
+                if(!changed) return
+              }
+            }
+          )
+      })
+    }
+  
+    with ( css )
+  
+    return FRAGMENT(
+  
+      JQUERY( jquerySwipe
+        ,
+        STRETCH( [ intro ], [ intro, intro_mobile ]
+          ,
+          CELL( [ '100%','auto', 996 ]
+            ,
+            STRETCH( [ 'h1', headline ],[ headline, headline_mobile ], txt.headline )
+            ,
+            STRETCH( [ 'h2', subline ],[ subline, subline_mobile ], txt.subline )
+          )
+          ,
+          CELL( [ '100%', { overflow: 'hidden' } ] 
+            ,
+            CELL( [ 'left', '100%', 'auto'],[ 996, 'auto', 'auto'],[ '300%', 'auto', 'auto' ], { query: [ {}, { minWidth: 966 }, { maxWidth: 640 } ] }
+              ,
+              EACH( txt.columns, function ( i ) {
+                return (
+                  CELL( [ '33.33%', '100%' ]
+                    , 
+                    SLIM( [ 'p', column ], [ column, column_mobile ], i )
+                  )
+                )
+              })
+            )
+          )
+          , 
+          CELL( [ 'nav', '100%', nav, { display: 'none' } ], [ nav, '100%', 16 ]
+            ,
+            EACH( [ 1, 2, 3 ], function ( i ) { 
+              return SLIM( { nodeName: 'a', 'class': i === 1 ? 'item item_active' : 'item' }, i )
+            })
+          )
+        )
+      )
+    )
+  } 
+
+///////////////////
+
+function PRO_CON () {
+  
+  var txt = {
+    
+    pro: {
+      btn: 'Pro',
+      headline: 'When carton is the best choice for you!',
+      list:[
+      'If you want to use a CSS framework that is designed to support you in building your custom CSS the way you prefer instead of dictating you a single way someone else prefers',
+      'If you want to save data volume for mobile devices with the small file size of carton',
+      'If you want to build responsive code with less extra work',
+      'If you are looking for a Framework that will only help you with positioning your DOM Elements', 
+      'If you need a framework that is 100% compatible with other CSS code',
+      'If you and your team just needs a pattern to standardize the approach of building a stylesheet',
+      'If you want to read the positioning of your DOM element out of the class names in your HTML document',
+      'If you don\'t want to spend too much time in understanding a CSS Framework.',
+      ]
+    },
+  
+    con: {
+      btn: 'Con',
+      headline: 'When you should look for another framework!',
+      list:[
+      'If you expect that the CSS Framework should not require you to have a deep understanding of CSS', 
+      'If you are looking for a CSS Framework that is based on columns and gutters', 
+      'If you want to have a comprehensive boilerplate that fixes more problems for you than positioning your DOM elements', 
+      'If you want to support every Browser ever build > link to faq',
+      'If you are looking for some kind of scaffolding', 
+      'If you plan the excessive use of em values > link to documentation'
+      ]
+    }
+    
+  }
+  
+  var css = {
+    
+    con: {
+      width: '50%',
+      backgroundColor: '#F1C5C5', backgroundImage: 'url(img/bg_blip.png)',
+      backgroundPosition: '100% 100%', backgroundSize: '23px 9px', backgroundRepeat: 'repeat-x', 
+      paddingTop: row * 2, paddingRight: column + gutter / 2, paddingBottom: row + row / 2, paddingLeft: gutter,
+      fontSize: 0,
+      '_div': { paddingBottom: row } 
+    },
+    
+    con_mobile: { 
+       width: '100%', 
+       paddingTop: row + row / 2, paddingLeft: gutter, paddingRight: gutter,
+       display: 'none',
+      '_div': { height: 0, overflow: 'hidden' },
+      '_:target': {  display: 'table-cell', '_div': { height: 'auto' } }
+    }, 
+    
+    pro: {
+      backgroundColor: '#C8E0F9', backgroundPosition: '0 100%', 
+      paddingLeft: column + gutter / 2, paddingRight: gutter
+    },
+    
+    stylesHeadline : { 
+      fontFamily: 'Source Sans Pro', fontWeight: '300',	fontSize: 20, color: '#695858',
+      lineHeight: row + row / 2, paddingBottom: row / 2
+    }
+  }
+   
+  function button ( value ) {
+    
+    var css =  {
+      zIndex: '0', backgroundColor: ( value.toLowerCase() == 'con' ) ? '#F1C5C5' : '#C8E0F9', 
+      fontFamily: 'Source Sans Pro', textDecoration: 'none', fontWeight: '300', fontSize: 20, 
+      color: ( value.toLowerCase() === 'con' ) ? '#695858' : '#5A646F', lineHeight: 3 * row
+    }
+    
+    return ( 
+      CELL( [ { display: 'none' } ],[ '50%', { display: 'inline-block' } ]
+        ,
+        STRETCH( [ 'a', css ], { href: '#' + value.toLowerCase() }, value )
+      )
+    )
+  }
+  
+  with ( css )
+  
+  return (
+    FRAGMENT(
+      button( txt.con.btn, '#F1C5C5' ), button( txt.pro.btn, '#C8E0F9' )
+      ,
+      TABLE( [ { width: '100%' } ],
+        TR(
+          TD( [ con, 'right' ], [  con, con_mobile ], { id: 'con' }, 
+            CELL( [ '100%', 'auto', 498 - ( column + gutter / 2 ) ]
+              ,
+              H1( [ stylesHeadline ], txt.con.headline )
+              ,
+              LIST( txt.con.list, '#695858' )
+            )
+          )
+          , 
+          TD( [ con, pro, 'left' ], [ con, pro, con_mobile ],  { id: 'pro' }, 
+            CELL( [ '100%', 'auto', 498 - ( column + gutter / 2 ) ]
+              ,
+              H1( [ stylesHeadline, { color: '#5A646F' } ], txt.pro.headline )
+              ,
+              LIST( txt.pro.list, '#5A646F' )
+            )
+          )
+        )
+      )
+    )
+  )
+}
+
+///////////////////
+
+  function LIST ( list, color ) {
+  
+    var css = {
+      
+      stylesListItem : {
+        fontFamily: 'Source Sans Pro', fontWeight: '300',	fontSize: 14, color: color,	
+        lineHeight: row, paddingLeft: 20, paddingRight: 3, backgroundImage: 'url(img/bg_star.png)', backgroundSize: '17px 16px',
+        backgroundRepeat: 'no-repeat', backgroundPosition: '0 0',
+        overflow: 'hidden',
+      }
+    }
+  
+    with ( css )
+  
+    return (
+      CELL( [ 'UL' ]
+        ,
+        EACH( list, function ( item, i ) {
+          return CHOPPED( [ 'LI', stylesListItem, ( i == 0 ) ? { backgroundImage: 'none', paddingLeft: 0 } : {} ], item )
+        })
+      )
+    )
+  }
+
+
+//////////////////
+
+  function FAQ () {
+    
+    var txt = {
+      
+      left: [ 
+        { headline:  'What makes it so responsive?',
+          txt: 'Because the core concept is that a cells will define the horizontal dimensions for elements in it. These childs behaves like words in a line. If no room has left for one element it breaks into the next line. So for many responsive layouts you only need to adjust the cells for different screen resolutions and the child elements will fit by their own.',
+          linkLabel: 'Learn more',
+          href: 'https://github.com/cartonmarkup/cssCarton#responsive-design'
+        },
+        
+        { headline:  'Is it well documented?',
+          txt: 'You can find our documentation in the readme file as part of cartons GitHub repository. We know for an fast understanding of a new software, the importance of a good documentation and hope we support you in the following link with all you need to use our framework. If after "studying" our stuff you haven\'t found all answers please don\'t delay on asking us.',
+          linkLabel: 'Take a look on the documentation',
+          href: 'https://github.com/cartonmarkup/cssCarton/blob/master/README.md'
+        },
+     
+      ],
+      
+      right: [  
+     
+        { headline:  'What Browsers where supported?',
+          txt: FRAGMENT( 'Carton works with all kind of browsers as long as they support ',  I_( 'display:inline-block' ), ' like: ',   STRONG_( 'Firefox' ), ', ' ,STRONG_( 'Chrome' ), ', ' , STRONG_( 'Safari' ), ', ', STRONG_( 'Opera' ), ', ', STRONG_( 'Internet Explorer'), ' > Version 5' ),
+          linkLabel: 'Learn more',
+          href: 'https://github.com/cartonmarkup/cssCarton#browser-compatibility'
+        },
+   
+        { headline:  'Licence?',
+          txt: FRAGMENT( 'Carton is released under the ', STRONG_( 'MIT License.' ) ),
+          linkLabel: 'Learn more',
+          href: 'http://www.opensource.org/licenses/MIT'
+        }
+      ]
+    }
+  
+    var css = {
+      
+      blue: { 
+        paddingLeft: gutter, paddingRight: gutter, paddingBottom: row, paddingTop: 3 * 18,
+        backgroundColor: '#EEF5FC' 
+      },
+      
+      badgeStart: {
+        backgroundImage: 'url(img/bg_blip_left.png)', backgroundRepeat: "no-repeat", backgroundSize: '14px 26px',
+        width: 14, height: 26
+      },
+      
+      badge: {
+        fontFamily: 'Source Sans Pro', fontWeight: '600',	fontSize: 12, color: '#FAFAFA', lineHeight: 26, textTransform: 'uppercase',
+        paddingLeft: gutter, paddingRight: gutter,
+        backgroundColor: "#313131"
+      },
+    
+      badgeEnd: {
+        backgroundImage: 'url(img/bg_blip_right.png)',
+      },
+    
+      question: {
+        fontFamily: 'Source Sans Pro', fontWeight: '200', fontSize: 20, color: '#000000', lineHeight: row + row / 3,
+        marginLeft: column, 
+        paddingLeft: column / 2, paddingBottom: row / 2,
+        backgroundImage: 'url(./img/bg_star.png)', backgroundSize: '17px 16px', backgroundRepeat: "no-repeat", backgroundPosition: "0 3px",
+      },
+      
+      answer: {
+        fontFamily: 'Source Sans Pro', fontWeight: '300', fontSize: 14, lineHeight: row, color: '#93989D',
+        paddingRight: gutter, paddingBottom: row / 2, paddingLeft: column / 2, 
+        marginLeft: column, 
+        '_strong': { fontWeight: 'bold' },
+        '_i': { fontStyle:'italic' }
+      },
+      
+      right: { marginLeft: 0, marginRight: column },
+      
+      link: {
+        backgroundImage: 'url(./img/bg_arrow_left.png)', backgroundPosition: '100% 50%',
+        backgroundSize: '8px 12px', backgroundRepeat: 'no-repeat', textDecoration: 'none',
+        fontFamily: 'Source Sans Pro', fontWeight: '400', fontSize: 18, color: '#46494B', 
+        paddingRight: 12,
+        transition: 'padding-right 0.3s',
+        '_:hover': { paddingRight: gutter }
+      }
+    }
+  
+  
+    function ASK ( x ) {
+      
+      with ( css )
+      
+      return (
+        EACH( txt[ x ], function ( key, i ) {
+          return ( 
+            CELL( [ '50%' ], [ '100%' ]
+              ,
+              STRETCH( [ { paddingBottom: 2 * row } ],[ { paddingBottom: row } ]
+                ,
+                H1( [ question, i == 0 ? {} : right ], [ question, { marginLeft: gutter, paddingRight: gutter } ] , key.headline )
+                ,
+                P( [ answer,  i == 0 ? {} : right ], [ answer, { marginLeft: gutter, paddingRight: gutter } ], key.txt )
+                ,
+                P([ answer,  i == 0 ? {} : right], [ answer, { marginLeft: gutter , paddingRight: gutter } ]
+                  ,
+                  A( [  link ], { href: key.href }, key.linkLabel ) 
+                )
+              ) 
+            )
+          )
+        })
+      )
+    }
+  
+    with ( css )
+  
+    return (
+      
+      STRETCH( [ blue ], [ blue, { paddingLeft: 0,  paddingRight: 0  } ]
+        ,
+        CELL( [ '100%', 'auto', 996, 'left' ]
+          ,
+          STICKER( [ -66, '50%', {  marginLeft: -150, width: 300  } ]
+            ,
+            CELL( [ '100%', 'center' ]
+              ,
+              SLIM( [ 'span', badgeStart ] )
+              ,
+              SLIM( [ badge ], 'Of course you still have questions?' )
+              ,
+              SLIM( [ 'span', badgeStart, badgeEnd  ] )
+            )
+          )
+          ,
+          ASK( 'left' )
+        )
+        ,
+        CELL( [ '100%', 'auto', 996, 'left' ]
+          ,
+          ASK( 'right' ) 
+        )
+      )  
+    )
+  }
+
+//////////////////
+
+  function GITHUB () {
+    
+    var css = {
+      
+      github: { backgroundColor: "#313131", paddingTop: row, paddingBottom: row },
+      
+      logo: {
+        backgroundImage: 'url(./img/bg_logo_flat.png)', backgroundPosition: '100% 0', 
+        backgroundSize: '161px 51px', backgroundRepeat: 'no-repeat', 
+        width: 161, height: 51,
+        paddingLeft: gutter,
+        marginLeft: '50%',
+      },
+      
+      logoMobile: { 
+        backgroundPosition: '100% 10px', backgroundImage: 'url(./img/bg_logo_flat_mobile.png)', 
+        backgroundSize: '109px 35px', backgroundRepeat: 'no-repeat',
+        width: 109, height: 51, 
+        paddingLeft: gutter
+      }, 
+      
+      button: {
+        backgroundColor: '#404040', backgroundImage: 'linear-gradient(top, #595959 0%, #434343 100%)',
+        fontFamily: 'Source Sans Pro', fontWeight: '300',	fontSize: 12, color: "#767676",
+        lineHeight: 16, textDecoration: 'none',
+        paddingBottom: row / 2, paddingTop: row / 2, paddingLeft: column / 2, paddingRight: gutter,
+        marginRight: gutter,
+        borderRadius: gutter / 2, 
+        maxWidth: 272,
+        
+        '_strong': {
+          fontFamily: 'Source Sans Pro', fontWeight: '400', fontSize: 18,
+          color: '#FFFFFF', lineHeight: 16
+        }
+      },
+      
+      button_mobile: { paddingLeft: column / 2, paddingRight: 5, fontSize: 11,  maxWidth: 'auto' } 
+    } 
+       
+    with ( css )
+    
+    return (
+    
+      STRETCH( [ github ] 
+        ,
+        CELL( [ '100%', 'auto', 996 ]
+          ,
+          CELL( [ '50%', 'left' ], [ '45%', 'left' ]
+            ,
+            SLIM( [ logo ], [ logoMobile, { marginLeft: '50%' } ], [ logoMobile, { marginLeft: 18 } ], [ logoMobile, { marginLeft: 2 } ], { query: [ { minWidth: 800 }, { maxWidth: 800, minWidth: 640 }, { maxWidth: 640, minWidth: 360 }, { maxWidth: 360 } ] } )
+          )
+          ,
+          CELL( [ '50%', 'auto', 'left' ], [ '55%', 'left' ]
+            ,  
+            STRETCH( [ 'a', button ], [ button, button_mobile ], { href: 'https://github.com/zombiemetzger/cssCarton' }
+              ,
+              STRONG_( 'Go to GitHub' )
+              ,
+              BR()
+              ,
+              'and get all the files you need'
+            )
+          )
+        )
+      )
+    )
+  }
+
+//////////////////
+
+  function FOOT () {
+    
+    var css = {
+      
+      foot: {
+        backgroundImage: 'linear-gradient(top, #797979 0%, #3A3A3A 99%)',  
+        paddingTop: row, paddingRight: gutter, paddingBottom: row, paddingLeft: gutter,
+        minHeight: 18 * row
+      },
+      
+      copywrite: {
+        paddingTop: row + row / 2 + 3, paddingRight: gutter,
+        fontFamily: 'Source Sans Pro', fontWeight: "400",	fontSize: 14, color: "#292A29", lineHeight: 18
+      },
+      
+      copywriteMobile: {
+        bottom: 0, left: 0,
+        fontFamily: 'Source Sans Pro', fontWeight: "400",	fontSize: 14, color: "#292A29", lineHeight: 18
+      },
+      
+      nav: {
+        paddingBottom: row + row / 2, paddingTop: row, paddingLeft: gutter,
+        marginRight: column / 2, marginTop: row / 2, minHeight: 4 * row,
+        border: "3px solid rgba(49, 49, 49, 0.21)", borderRadius: gutter / 2,
+      },
+      
+      navMobile: { marginLeft: 0, marginRight: 0, marginTop: 0, minHeight: 'auto' },
+      
+      item: {
+        fontFamily: 'Source Sans Pro', fontWeight: "400",	fontSize: 14, lineHeight: 18, color: "#292A29", textDecoration: 'none'
+      },
+      
+      itemHover: {
+        '_:hover': { color: '#FBFBFB', cursor: 'pointer' }
+      },
+      
+      sponsor: {
+        border: "3px solid rgba(49, 49, 49, 0.21)", borderRadius: gutter / 2,
+        paddingBottom: row + row / 2, paddingTop: row, paddingLeft: gutter,
+        marginRight: column / 2,
+        marginTop: row / 2,
+        minHeight: 4 * row
+      },
+      
+      sponsorMobile: {  marginTop: row, marginLeft: 0, marginRight: 0, minHeight: 'auto' },
+      
+      piccobello: {
+        width: 178, height: 38,
+        marginTop: row + row / 2, marginLeft: 0,
+        backgroundSize: '178px 38px', backgroundPosition: '0 0', backgroundImage: 'url(img/bg_piccobello.png)',
+      }
+    }
+    
+    var factoryCopywrite = {   
+      type: [ 'cell', 'sticker' ], 
+      align: [ 'right', 'left' ],
+      styles: [ 
+        { width: '25%' }, 
+        { bottom: -( 3 * row ), left: column / 2, right: 0 } 
+      ]
+    }
+    
+    with ( css )
+    
+    return (
+      STRETCH( [ foot ] 
+        ,
+        CELL( [ '100%', 'auto', 996 ]
+          ,
+          FACTORY( 'div', factoryCopywrite
+            ,
+            STRETCH( [ copywrite ], 'Copyright ©', BR(), 'Mathias Prinz & Tobias Schlömer ' + ( new Date().getFullYear() ) )
+          )
+          ,
+          CELL( [ '25%', 'left' ], [ '100%', 'left' ]
+            ,
+            STRETCH( [ 'nav', nav ], [ nav, navMobile ]
+              ,
+              CELL( [ '100%' ]
+                ,
+                SLIM( [ 'a', item, itemHover ], { href: 'https://github.com/cartonmarkup/cssCarton/blob/master/README.md' }, 'Documentation' ), BR()
+                ,
+                SLIM( [ 'a', item, itemHover ], { href: 'https://github.com/cartonmarkup/cssCarton/archive/master.zip' }, 'Download' ), BR()
+                ,
+                SLIM( [ 'a', item, itemHover ], 'Imprint' ), BR()
+              )
+            )
+          )
+          ,
+          CELL( [ '50%', 'left' ], [ '100%' ]
+            ,
+            STRETCH( [ 'nav', sponsor, 'left' ], [ sponsor, 'left', sponsorMobile ]
+              ,
+              STICKER( [ 'span', row, gutter, item ] , 'Sponsored by:' ) 
+              ,
+              SLIM( [ 'a', piccobello ], { href: 'http://www.piccobello.com' } )
+            )
+          )
+        )
+      )
+    ) 
+  }
+
+</script>
+</body>
+</html>
